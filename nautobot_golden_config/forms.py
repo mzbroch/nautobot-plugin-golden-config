@@ -12,7 +12,6 @@ from nautobot.utilities.forms import StaticSelect2Multiple, SlugField
 
 
 from nautobot_golden_config import models
-from nautobot_golden_config.utilities.helper import clean_config_settings
 
 # ConfigCompliance
 
@@ -335,26 +334,20 @@ class GoldenConfigSettingFeatureForm(
     utilities_forms.BootstrapMixin, extras_forms.CustomFieldModelForm, extras_forms.RelationshipModelForm
 ):
     """Filter Form for GoldenConfigSettingFeatureForm instances."""
-
-    backup_repository = forms.ModelMultipleChoiceField(
-        queryset=GitRepository.objects.filter(provided_contents__contains="nautobot_golden_config.backupconfigs"),
-        widget=StaticSelect2Multiple(),
-    )
-    intended_repository = forms.ModelMultipleChoiceField(
-        queryset=GitRepository.objects.filter(provided_contents__contains="nautobot_golden_config.intendedconfigs"),
-        widget=StaticSelect2Multiple(),
-    )
+    slug = SlugField()
 
     class Meta:
         """Filter Form Meta Data for GoldenConfigSettingFeatureForm instances."""
 
         model = models.GoldenConfigSetting
         fields = (
+            "name",
+            "slug",
+            "weight",
+            "description",
             "backup_repository",
-            "backup_match_rule",
             "backup_path_template",
             "intended_repository",
-            "intended_match_rule",
             "intended_path_template",
             "jinja_repository",
             "jinja_path_template",
@@ -363,14 +356,3 @@ class GoldenConfigSettingFeatureForm(
             "sot_agg_query",
         )
 
-    def clean(self):
-        """Clean."""
-        super().clean()
-        # This custom clean function validates logic of when or when not to
-        # have a template matching path in GlobalConfigSettings for repos.
-        for repo_type in ["intended", "backup"]:
-            clean_config_settings(
-                repo_type=repo_type,
-                repo_count=self.cleaned_data.get(f"{repo_type}_repository").count(),
-                match_rule=self.cleaned_data.get(f"{repo_type}_match_rule"),
-            )

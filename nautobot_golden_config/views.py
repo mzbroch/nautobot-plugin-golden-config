@@ -57,7 +57,7 @@ class GoldenConfigListView(generic.ObjectListView):
 
     def alter_queryset(self, request):
         """Build actual runtime queryset as the build time queryset provides no information."""
-        return self.queryset.filter(id__in=models.GoldenConfigSetting.objects.first().get_queryset())
+        return self.queryset.filter(id__in=Device.objects.none().union(*[x.get_queryset() for x in models.GoldenConfigSetting.objects.all()]))
 
     def queryset_to_csv(self):
         """Override nautobot default to account for using Device model for GoldenConfig data."""
@@ -391,7 +391,7 @@ class ConfigComplianceDetails(ContentTypePermissionRequiredMixin, generic.View):
             if request.GET.get("format") in ["json", "yaml"]:
                 structure_format = request.GET.get("format")
 
-            global_settings = models.GoldenConfigSetting.objects.first()
+            global_settings = models.GoldenConfigSetting.objects.first()  # TODO(mzb)
             _, output = graph_ql_query(request, device, global_settings.sot_agg_query)
 
             if structure_format == "yaml":
@@ -824,41 +824,47 @@ class ComplianceRuleBulkEditView(generic.BulkEditView):
 #
 # GoldenConfigSetting
 #
-
-
 class GoldenConfigSettingView(generic.ObjectView):
-    """View for the only GoldenConfigSetting instance."""
+    """View for single GoldenConfigSetting instance."""
 
     queryset = models.GoldenConfigSetting.objects.all()
 
-    def get(self, request, *args, **kwargs):
-        """Override the get parameter to get the first instance to enforce singleton pattern."""
-        instance = self.queryset.first()
+    # def get_extra_context(self, request, instance):
+    #     """Add extra data to detail view for Nautobot."""
+    #     return {}
 
-        return render(
-            request,
-            self.get_template_name(),
-            {
-                "object": instance,
-                **self.get_extra_context(request, instance),
-            },
-        )
 
-    def get_extra_context(self, request, instance):
-        """Add extra data to detail view for Nautobot."""
-        return {}
+class GoldenConfigSettingCreateView(generic.ObjectEditView):
+    """Create view."""
+
+    model = models.GoldenConfigSetting
+    queryset = models.GoldenConfigSetting.objects.all()
+    model_form = forms.GoldenConfigSettingFeatureForm
+
+
+class GoldenConfigSettingDeleteView(generic.ObjectDeleteView):
+    """Delete view."""
+
+    model = models.GoldenConfigSetting
+    queryset = models.GoldenConfigSetting.objects.all()
 
 
 class GoldenConfigSettingEditView(generic.ObjectEditView):
-    """View for editing the Global configurations."""
+    """Edit view."""
 
+    model = models.GoldenConfigSetting
     queryset = models.GoldenConfigSetting.objects.all()
     model_form = forms.GoldenConfigSettingFeatureForm
-    default_return_url = "plugins:nautobot_golden_config:goldenconfigsetting"
+    template_name = "nautobot_golden_config/goldenconfigsetting_edit.html"
 
-    def get_object(self, kwargs):
-        """Override method to get first object to enforce the singleton pattern."""
-        return self.queryset.first()
+
+class GoldenConfigSettingListView(generic.ObjectListView):
+    """List view."""
+
+    queryset = models.GoldenConfigSetting.objects.all()
+    table = tables.GoldenConfigSettingTable
+    # TODO: Get import working
+    action_buttons = ("add", "export")
 
 
 #

@@ -88,14 +88,29 @@ urlpatterns = [
         name="compliancefeature_changelog",
         kwargs={"model": models.ComplianceFeature},
     ),
-    path("setting/", views.GoldenConfigSettingView.as_view(), name="goldenconfigsetting"),
-    path("setting/edit/", views.GoldenConfigSettingEditView.as_view(), name="goldenconfigsetting_edit"),
+
+    path("setting/", views.GoldenConfigSettingListView.as_view(), name="goldenconfigsetting_list"),
+
+    path("setting/<uuid:pk>/", views.GoldenConfigSettingView.as_view(), name="goldenconfigsetting"),
+
+    path("setting/add/", views.GoldenConfigSettingEditView.as_view(), name="goldenconfigsetting_add"),
+    path("setting/delete/", views.GoldenConfigSettingEditView.as_view(), name="goldenconfigsetting_delete"),
     path(
-        "setting/changelog/",
+        "setting/<uuid:pk>/edit/", views.GoldenConfigSettingEditView.as_view(), name="goldenconfigsetting_edit"
+    ),
+    path(
+        "setting/<uuid:pk>/changelog/",
         ObjectChangeLogView.as_view(),
         name="goldenconfigsetting_changelog",
         kwargs={"model": models.GoldenConfigSetting},
     ),
+
+    # path(
+    #     "setting/changelog/",
+    #     ObjectChangeLogView.as_view(),
+    #     name="goldenconfigsetting_changelog",
+    #     kwargs={"model": models.GoldenConfigSetting},
+    # ),
     path("config-remove/", views.ConfigRemoveListView.as_view(), name="configremove_list"),
     path("config-remove/add/", views.ConfigRemoveEditView.as_view(), name="configremove_add"),
     path(

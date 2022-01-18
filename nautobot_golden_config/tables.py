@@ -9,6 +9,7 @@ from nautobot.dcim.models import Device
 from nautobot.utilities.tables import (
     BaseTable,
     ToggleColumn,
+BooleanColumn,
 )
 from nautobot_golden_config import models
 from nautobot_golden_config.utilities.constant import ENABLE_BACKUP, ENABLE_COMPLIANCE, ENABLE_INTENDED, CONFIG_FEATURES
@@ -357,3 +358,52 @@ class ConfigReplaceTable(BaseTable):
         model = models.ConfigReplace
         fields = ("pk", "name", "platform", "description", "regex", "replace")
         default_columns = ("pk", "name", "platform", "description", "regex", "replace")
+
+
+class GoldenConfigSettingTable(BaseTable):
+    # pylint: disable=R0903
+    """Table for list view."""
+
+    pk = ToggleColumn()
+    name = LinkColumn("plugins:nautobot_golden_config:goldenconfigsetting", args=[A("pk")])
+    jinja_repository = Column(
+        verbose_name="Jinja Repository", empty_values=(),
+    )
+    intended_repository = Column(
+        verbose_name="Intended Repository", empty_values=(),
+    )
+    backup_repository = Column(
+        verbose_name="Backup Repository", empty_values=(),
+    )
+
+    def _render_capability(self, record, column, record_attribute):
+        if getattr(record, record_attribute, None):
+            return "✔"
+        else:
+            return "✘"
+
+    def render_backup_repository(self, record, column):  # pylint: disable=no-self-use
+        """Pull back backup last success per row record."""
+        return self._render_capability(record=record, column=column, record_attribute="backup_repository")
+
+    def render_intended_repository(self, record, column):  # pylint: disable=no-self-use
+        """Pull back backup last success per row record."""
+        return self._render_capability(record=record, column=column, record_attribute="intended_repository")
+
+    def render_jinja_repository(self, record, column):  # pylint: disable=no-self-use
+        """Pull back backup last success per row record."""
+        return self._render_capability(record=record, column=column, record_attribute="jinja_repository")
+
+    class Meta(BaseTable.Meta):
+        """Meta attributes."""
+
+        model = models.GoldenConfigSetting
+        fields = (
+            "pk",
+            "name",
+            "weight",
+            "description",
+            "backup_repository",
+            "intended_repository",
+            "jinja_repository",
+        )
