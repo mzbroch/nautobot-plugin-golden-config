@@ -30,6 +30,7 @@ from packaging.version import Version
 from nautobot_golden_config import filters, forms, models, tables
 from nautobot_golden_config.utilities.constant import CONFIG_FEATURES, ENABLE_COMPLIANCE, PLUGIN_CFG
 from nautobot_golden_config.utilities.graphql import graph_ql_query
+from nautobot_golden_config.utilities.helper import get_device_to_settings_map
 
 LOGGER = logging.getLogger(__name__)
 
@@ -391,8 +392,8 @@ class ConfigComplianceDetails(ContentTypePermissionRequiredMixin, generic.View):
             if request.GET.get("format") in ["json", "yaml"]:
                 structure_format = request.GET.get("format")
 
-            global_settings = models.GoldenConfigSetting.objects.first()  # TODO(mzb)
-            _, output = graph_ql_query(request, device, global_settings.sot_agg_query)
+            settings = get_device_to_settings_map(queryset=Device.objects.filter(pk=device.pk))[device]
+            _, output = graph_ql_query(request, device, settings.sot_agg_query)
 
             if structure_format == "yaml":
                 output = yaml.dump(json.loads(json.dumps(output)), default_flow_style=False)
