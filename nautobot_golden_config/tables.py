@@ -378,8 +378,8 @@ class GoldenConfigSettingTable(BaseTable):
         empty_values=(),
     )
 
-    def _render_capability(self, record, column, record_attribute):
-        if getattr(record, record_attribute, None):
+    def _render_capability(self, record, column, record_attribute):  # pylint: disable=unused-argument, no-self-use
+        if getattr(record, record_attribute, None):  # pylint: disable=no-else-return
             return "✔"
         else:
             return "✘"

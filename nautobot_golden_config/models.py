@@ -12,7 +12,6 @@ from graphene_django.settings import graphene_settings
 from graphql import get_default_backend
 from graphql.error import GraphQLSyntaxError
 
-from nautobot.core.fields import AutoSlugField
 from nautobot.dcim.models import Device
 from nautobot.extras.models import ObjectChange
 from nautobot.extras.utils import extras_features

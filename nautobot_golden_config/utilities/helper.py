@@ -3,15 +3,11 @@
 
 from jinja2 import exceptions as jinja_errors
 
-from django import forms
-from django.conf import settings
-
 from nautobot.dcim.models import Device
 from nautobot.dcim.filters import DeviceFilterSet
 from nautobot.utilities.utils import render_jinja2
 
 from nornir_nautobot.exceptions import NornirNautobotException
-from nornir_nautobot.utils.logger import NornirLogger
 
 from nautobot_golden_config import models
 
@@ -124,6 +120,7 @@ def render_jinja_template(obj, logger, template):
 
 
 def get_device_to_settings_map(queryset):
+    """Helper function to map settings to devices."""
     device_to_settings_map = {}
     for golden_config_setting in models.GoldenConfigSetting.objects.all():
         for device in golden_config_setting.get_queryset():
