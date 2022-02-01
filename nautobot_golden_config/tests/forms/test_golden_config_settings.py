@@ -21,17 +21,13 @@ class GoldenConfigSettingFormTest(TestCase):
         """Testing GoldenConfigForm without specifying a unique scope or GraphQL Query."""
         form = GoldenConfigSettingFeatureForm(
             data={
-                "backup_repository": [
-                    GitRepository.objects.get(name="test-backup-repo-1"),
-                    GitRepository.objects.get(name="test-backup-repo-2"),
-                ],
-                "backup_match_rule": "backup-{{ obj.site.region.parent.slug }}",
+                "name": "test",
+                "slug": "test",
+                "weight": 1000,
+                "description": "Test description.",
+                "backup_repository": GitRepository.objects.get(name="test-backup-repo-1"),
                 "backup_path_template": "{{ obj.site.region.parent.slug }}/{{obj.name}}.cfg",
-                "intended_repository": [
-                    GitRepository.objects.get(name="test-intended-repo-1"),
-                    GitRepository.objects.get(name="test-intended-repo-2"),
-                ],
-                "intended_match_rule": "intended-{{ obj.site.region.parent.slug }}",
+                "intended_repository": GitRepository.objects.get(name="test-intended-repo-1"),
                 "intended_path_template": "{{ obj.site.slug }}/{{ obj.name }}.cfg",
                 "backup_test_connectivity": True,
             }

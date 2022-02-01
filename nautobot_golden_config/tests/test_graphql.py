@@ -118,14 +118,7 @@ class TestGraphQLQuery(TestCase):  # pylint: disable=too-many-instance-attribute
             git_obj = GitRepository.objects.create(**item)
             git_obj.save()
 
-        backup_repo_list = GitRepository.objects.filter(
-            provided_contents__contains="nautobot_golden_config.backupconfigs"
-        )
-        intended_repo_list = GitRepository.objects.filter(
-            provided_contents__contains="nautobot_golden_config.intendedconfigs"
-        )
-
-        GoldenConfigSetting.objects.update(
+        GoldenConfigSetting.objects.create(
             backup_path_template="test/backup",
             intended_path_template="test/intended",
             jinja_repository=GitRepository.objects.get(
@@ -135,9 +128,13 @@ class TestGraphQLQuery(TestCase):  # pylint: disable=too-many-instance-attribute
             backup_test_connectivity=True,
             scope={"platform": ["platform1"]},
             sot_agg_query="{test_model}",
+            backup_repository=GitRepository.objects.get(
+                provided_contents__contains="nautobot_golden_config.backupconfigs"
+            ),
+            intended_repository=GitRepository.objects.get(
+                provided_contents__contains="nautobot_golden_config.intendedconfigs"
+            ),
         )
-        GoldenConfigSetting.objects.first().backup_repository.set(backup_repo_list)
-        GoldenConfigSetting.objects.first().intended_repository.set(intended_repo_list)
 
         self.feature1 = ComplianceFeature.objects.create(
             name="aaa",

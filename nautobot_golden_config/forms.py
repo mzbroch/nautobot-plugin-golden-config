@@ -355,4 +355,3 @@ class GoldenConfigSettingFeatureForm(
             "scope",
             "sot_agg_query",
         )
-
