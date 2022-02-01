@@ -100,7 +100,10 @@ class ComplianceJob(Job, FormEntry):
             git_wrapper(self, repo, "intended")
             for repo in [r.intended_repository for r in GoldenConfigSetting.objects.all() if r.intended_repository]
         ]
-        _ = [git_wrapper(self, repo, "backup") for repo in [r.backup_repository for r in GoldenConfigSetting.objects.all() if r.backup_repository]]
+        _ = [
+            git_wrapper(self, repo, "backup")
+            for repo in [r.backup_repository for r in GoldenConfigSetting.objects.all() if r.backup_repository]
+        ]
 
         config_compliance(self, data)
 
@@ -134,11 +137,17 @@ class IntendedJob(Job, FormEntry):
         now = datetime.now()
 
         LOGGER.debug("Pull Jinja template repos.")
-        _ = [git_wrapper(self, repo, "jinja") for repo in [r.jinja_repository for r in GoldenConfigSetting.objects.all() if r.jinja_repository]]
+        _ = [
+            git_wrapper(self, repo, "jinja")
+            for repo in [r.jinja_repository for r in GoldenConfigSetting.objects.all() if r.jinja_repository]
+        ]
 
         LOGGER.debug("Pull Intended config repos.")
         # Instantiate a GitRepo object for each GitRepository in GoldenConfigSettings.
-        intended_repos = [git_wrapper(self, repo, "intended") for repo in [r.intended_repository for r in GoldenConfigSetting.objects.all() if r.intended_repository]]
+        intended_repos = [
+            git_wrapper(self, repo, "intended")
+            for repo in [r.intended_repository for r in GoldenConfigSetting.objects.all() if r.intended_repository]
+        ]
 
         LOGGER.debug("Run config intended nornir play.")
         config_intended(self, data)
@@ -180,7 +189,10 @@ class BackupJob(Job, FormEntry):
         LOGGER.debug("Pull Backup config repo.")
 
         # Instantiate a GitRepo object for each GitRepository in GoldenConfigSettings.
-        backup_repos = [git_wrapper(self, repo, "backup") for repo in [r.backup_repository for r in GoldenConfigSetting.objects.all() if r.backup_repository]]
+        backup_repos = [
+            git_wrapper(self, repo, "backup")
+            for repo in [r.backup_repository for r in GoldenConfigSetting.objects.all() if r.backup_repository]
+        ]
         LOGGER.debug("Starting backup jobs to the following repos: %s", backup_repos)
 
         LOGGER.debug("Run nornir play.")

@@ -416,6 +416,7 @@ class GoldenConfig(PrimaryModel):
 )
 class GoldenConfigSetting(PrimaryModel):
     """GoldenConfigSetting Model defintion. This provides global configs instead of via configs.py."""
+
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
     weight = models.PositiveSmallIntegerField(default=1000)
@@ -500,6 +501,7 @@ class GoldenConfigSetting(PrimaryModel):
 
         Provide ordering used in tables and get_device_to_settings_map.
         """
+
         verbose_name = "Golden Config Setting"
         ordering = ["-weight", "name"]
 

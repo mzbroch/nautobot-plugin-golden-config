@@ -334,6 +334,7 @@ class GoldenConfigSettingFeatureForm(
     utilities_forms.BootstrapMixin, extras_forms.CustomFieldModelForm, extras_forms.RelationshipModelForm
 ):
     """Filter Form for GoldenConfigSettingFeatureForm instances."""
+
     slug = SlugField()
 
     class Meta:

@@ -146,7 +146,9 @@ class GoldenConfigSettingsAPITest(APITestCase):
         )
         self.assertEqual(response.data["jinja_repository"], GitRepository.objects.get(name="test-jinja-repo-1").id)
         self.assertEqual(response.data["backup_repository"], GitRepository.objects.get(name="test-backup-repo-1").id)
-        self.assertEqual(response.data["intended_repository"], GitRepository.objects.get(name="test-intended-repo-1").id)
+        self.assertEqual(
+            response.data["intended_repository"], GitRepository.objects.get(name="test-intended-repo-1").id
+        )
         # Clean up
         GoldenConfigSetting.objects.all().delete()
         self.assertEqual(GoldenConfigSetting.objects.all().count(), 0)
@@ -185,7 +187,9 @@ class GoldenConfigSettingsAPITest(APITestCase):
         )
         self.assertEqual(response.data["jinja_repository"], GitRepository.objects.get(name="test-jinja-repo-1").id)
         self.assertEqual(response.data["backup_repository"], GitRepository.objects.get(name="test-backup-repo-1").id)
-        self.assertEqual(response.data["intended_repository"], GitRepository.objects.get(name="test-intended-repo-1").id)
+        self.assertEqual(
+            response.data["intended_repository"], GitRepository.objects.get(name="test-intended-repo-1").id
+        )
         # Clean up
         GoldenConfigSetting.objects.all().delete()
         self.assertEqual(GoldenConfigSetting.objects.all().count(), 0)

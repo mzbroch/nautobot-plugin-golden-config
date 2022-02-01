@@ -9,7 +9,6 @@ from nautobot.dcim.models import Device
 from nautobot.utilities.tables import (
     BaseTable,
     ToggleColumn,
-BooleanColumn,
 )
 from nautobot_golden_config import models
 from nautobot_golden_config.utilities.constant import ENABLE_BACKUP, ENABLE_COMPLIANCE, ENABLE_INTENDED, CONFIG_FEATURES
@@ -367,13 +366,16 @@ class GoldenConfigSettingTable(BaseTable):
     pk = ToggleColumn()
     name = LinkColumn("plugins:nautobot_golden_config:goldenconfigsetting", args=[A("pk")])
     jinja_repository = Column(
-        verbose_name="Jinja Repository", empty_values=(),
+        verbose_name="Jinja Repository",
+        empty_values=(),
     )
     intended_repository = Column(
-        verbose_name="Intended Repository", empty_values=(),
+        verbose_name="Intended Repository",
+        empty_values=(),
     )
     backup_repository = Column(
-        verbose_name="Backup Repository", empty_values=(),
+        verbose_name="Backup Repository",
+        empty_values=(),
     )
 
     def _render_capability(self, record, column, record_attribute):

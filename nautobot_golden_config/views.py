@@ -58,7 +58,9 @@ class GoldenConfigListView(generic.ObjectListView):
 
     def alter_queryset(self, request):
         """Build actual runtime queryset as the build time queryset provides no information."""
-        return self.queryset.filter(id__in=Device.objects.none().union(*[x.get_queryset() for x in models.GoldenConfigSetting.objects.all()]))
+        return self.queryset.filter(
+            id__in=Device.objects.none().union(*[x.get_queryset() for x in models.GoldenConfigSetting.objects.all()])
+        )
 
     def queryset_to_csv(self):
         """Override nautobot default to account for using Device model for GoldenConfig data."""

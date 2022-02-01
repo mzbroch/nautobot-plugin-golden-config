@@ -182,12 +182,8 @@ class GoldenConfigSettingGitModelTestCase(TestCase):
         self.assertTrue(self.golden_config.backup_test_connectivity)
         self.assertEqual(self.golden_config.jinja_repository, GitRepository.objects.get(name="test-jinja-repo-1"))
         self.assertEqual(self.golden_config.jinja_path_template, "{{ obj.platform.slug }}/main.j2")
-        self.assertEqual(
-            self.golden_config.backup_repository, GitRepository.objects.get(name="test-backup-repo-1")
-        )
-        self.assertEqual(
-            self.golden_config.intended_repository, GitRepository.objects.get(name="test-intended-repo-1")
-        )
+        self.assertEqual(self.golden_config.backup_repository, GitRepository.objects.get(name="test-backup-repo-1"))
+        self.assertEqual(self.golden_config.intended_repository, GitRepository.objects.get(name="test-intended-repo-1"))
 
     # def test_removing_git_repos(self):
     #     """Ensure we can remove the Git Repository obejcts from GoldenConfigSetting."""
