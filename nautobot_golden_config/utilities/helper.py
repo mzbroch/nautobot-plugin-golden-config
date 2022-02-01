@@ -43,7 +43,12 @@ def get_job_filter(data=None):
     elif data.get("device"):
         query.update({"id": data["device"].values_list("pk", flat=True)})
 
-    base_qs = Device.objects.none().union(*[x.get_queryset() for x in models.GoldenConfigSetting.objects.all()])
+    base_qs = Device.objects.none() #.union(*[x.get_queryset() for x in models.GoldenConfigSetting.objects.all()]
+    for obj in models.GoldenConfigSetting.objects.all():
+        base_qs = base_qs | obj.get_queryset()
+
+    base_qs = base_qs.distinct()
+
     if base_qs.count() == 0:
         raise NornirNautobotException(
             "The base queryset didn't find any devices. Please check the Golden Config Setting scope."

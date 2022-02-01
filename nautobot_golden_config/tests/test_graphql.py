@@ -118,12 +118,16 @@ class TestGraphQLQuery(TestCase):  # pylint: disable=too-many-instance-attribute
             git_obj = GitRepository.objects.create(**item)
             git_obj.save()
 
+        # Since we enforce a singleton pattern on this model, nuke the auto-created object.
+        GoldenConfigSetting.objects.all().delete()
+
         GoldenConfigSetting.objects.create(
+            name="test_name",
+            slug="test_slug",
+            weight=1000,
+            description="Test Description.",
             backup_path_template="test/backup",
             intended_path_template="test/intended",
-            jinja_repository=GitRepository.objects.get(
-                provided_contents__contains="nautobot_golden_config.jinjatemplate"
-            ),
             jinja_path_template="{{jinja_path}}",
             backup_test_connectivity=True,
             scope={"platform": ["platform1"]},
@@ -133,6 +137,9 @@ class TestGraphQLQuery(TestCase):  # pylint: disable=too-many-instance-attribute
             ),
             intended_repository=GitRepository.objects.get(
                 provided_contents__contains="nautobot_golden_config.intendedconfigs"
+            ),
+            jinja_repository=GitRepository.objects.get(
+                provided_contents__contains="nautobot_golden_config.jinjatemplate"
             ),
         )
 
@@ -292,6 +299,9 @@ class TestGraphQLQuery(TestCase):  # pylint: disable=too-many-instance-attribute
         query = """
             query {
                 golden_config_settings {
+                    name
+                    slug
+                    weight
                     backup_path_template
                     intended_path_template
                     jinja_path_template
@@ -303,6 +313,9 @@ class TestGraphQLQuery(TestCase):  # pylint: disable=too-many-instance-attribute
         response_data = {
             "golden_config_settings": [
                 {
+                    "name": "test_name",
+                    "slug": "test_slug",
+                    "weight": 1000,
                     "backup_path_template": "test/backup",
                     "intended_path_template": "test/intended",
                     "jinja_path_template": "{{jinja_path}}",
