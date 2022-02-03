@@ -115,7 +115,7 @@ class GoldenConfigSettingsAPITest(APITestCase):
             "backup_repository": str(GitRepository.objects.get(name="test-backup-repo-1").id),
             "intended_repository": str(GitRepository.objects.get(name="test-intended-repo-1").id),
         }
-        # Since we enforce a singleton pattern on this model, nuke any auto-created objects.
+        # Since we enforced a singleton pattern on this model in 0.9 release migrations, nuke any auto-created objects.
         GoldenConfigSetting.objects.all().delete()
 
     def test_golden_config_settings_create_good(self):

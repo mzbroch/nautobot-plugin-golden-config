@@ -489,7 +489,7 @@ class GoldenConfigSetting(PrimaryModel):
 
     def get_absolute_url(self):  # pylint: disable=no-self-use
         """Return absolute URL for instance."""
-        return reverse("plugins:nautobot_golden_config:goldenconfigsetting", args=[self.pk])
+        return reverse("plugins:nautobot_golden_config:goldenconfigsetting", args=[self.slug])
 
     def __str__(self):
         """Return a simple string if model is called."""

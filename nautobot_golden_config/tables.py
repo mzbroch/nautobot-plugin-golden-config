@@ -364,7 +364,7 @@ class GoldenConfigSettingTable(BaseTable):
     """Table for list view."""
 
     pk = ToggleColumn()
-    name = LinkColumn("plugins:nautobot_golden_config:goldenconfigsetting", args=[A("pk")])
+    name = Column(order_by=("_name",), linkify=True)
     jinja_repository = Column(
         verbose_name="Jinja Repository",
         empty_values=(),

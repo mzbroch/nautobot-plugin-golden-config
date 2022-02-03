@@ -35,18 +35,51 @@ class HelpersTest(TestCase):
         create_helper_repo(name="intended-parent_region-1", provides="intendedconfigs")
         create_helper_repo(name="test-jinja-repo", provides="jinjatemplate")
 
+        create_helper_repo(name="backup-parent_region-2", provides="backupconfigs")
+        create_helper_repo(name="intended-parent_region-2", provides="intendedconfigs")
+        create_helper_repo(name="test-jinja-repo-2", provides="jinjatemplate")
+
+        create_helper_repo(name="backup-parent_region-3", provides="backupconfigs")
+        create_helper_repo(name="intended-parent_region-3", provides="intendedconfigs")
+        create_helper_repo(name="test-jinja-repo-3", provides="jinjatemplate")
+
         # Since we enforce a singleton pattern on this model, nuke the auto-created object.
         GoldenConfigSetting.objects.all().delete()
 
-        self.global_settings = GoldenConfigSetting.objects.create(
-            name="test",
-            slug="test",
-            description="test",
+        self.test_settings_a = GoldenConfigSetting.objects.create(
+            name="test_a",
+            slug="test_a",
+            description="test_a",
             weight=1000,
             backup_repository=GitRepository.objects.get(name="backup-parent_region-1"),
             intended_repository=GitRepository.objects.get(name="intended-parent_region-1"),
             jinja_repository=GitRepository.objects.get(name="test-jinja-repo"),
+            # Limit scope to orphaned device only
+            scope={"site": ["site-4"]}
         )
+
+        self.test_settings_b = GoldenConfigSetting.objects.create(
+            name="test_b",
+            slug="test_b",
+            description="test_b",
+            weight=2000,
+            backup_repository=GitRepository.objects.get(name="backup-parent_region-2"),
+            intended_repository=GitRepository.objects.get(name="intended-parent_region-2"),
+            jinja_repository=GitRepository.objects.get(name="test-jinja-repo-2"),
+            # Limit scope to orphaned device only
+            scope={"site": ["site-4"]}
+        )
+
+        self.test_settings_c = GoldenConfigSetting.objects.create(
+            name="test_c",
+            slug="test_c",
+            description="test_c",
+            weight=1000,
+            backup_repository=GitRepository.objects.get(name="backup-parent_region-3"),
+            intended_repository=GitRepository.objects.get(name="intended-parent_region-3"),
+            jinja_repository=GitRepository.objects.get(name="test-jinja-repo-3"),
+        )
+
         # Device.objects.all().delete()
         create_device(name="test_device")
         create_orphan_device(name="orphan_device")
@@ -118,13 +151,21 @@ class HelpersTest(TestCase):
         """Verify that we successfully look up the path from a provided repo object."""
         device = Device.objects.get(name="test_device")
         backup_directory = self.device_to_settings_map[device].backup_repository.filesystem_path
-        self.assertEqual(backup_directory, "/opt/nautobot/git/backup-parent_region-1")
+        self.assertEqual(backup_directory, "/opt/nautobot/git/backup-parent_region-3")
+
+        device = Device.objects.get(name="orphan_device")
+        backup_directory = self.device_to_settings_map[device].backup_repository.filesystem_path
+        self.assertEqual(backup_directory, "/opt/nautobot/git/backup-parent_region-2")
 
     def test_get_intended_repository_dir_success(self):
         """Verify that we successfully look up the path from a provided repo object."""
         device = Device.objects.get(name="test_device")
         intended_directory = self.device_to_settings_map[device].intended_repository.filesystem_path
-        self.assertEqual(intended_directory, "/opt/nautobot/git/intended-parent_region-1")
+        self.assertEqual(intended_directory, "/opt/nautobot/git/intended-parent_region-3")
+
+        device = Device.objects.get(name="orphan_device")
+        intended_directory = self.device_to_settings_map[device].intended_repository.filesystem_path
+        self.assertEqual(intended_directory, "/opt/nautobot/git/intended-parent_region-2")
 
     def test_get_job_filter_no_data_success(self):
         """Verify we get two devices returned when providing no data."""
@@ -149,9 +190,9 @@ class HelpersTest(TestCase):
     def test_get_job_filter_base_queryset_raise(self):
         """Verify we get raise for having a base_qs with no objects due to bad Golden Config Setting scope."""
         Platform.objects.create(name="Placeholder Platform", slug="placeholder-platform")
-        golden_settings = GoldenConfigSetting.objects.first()
-        golden_settings.scope = {"platform": ["placeholder-platform"]}
-        golden_settings.validated_save()
+        for golden_settings in GoldenConfigSetting.objects.all():
+            golden_settings.scope = {"platform": ["placeholder-platform"]}
+            golden_settings.validated_save()
         with self.assertRaises(NornirNautobotException) as failure:
             get_job_filter()
         self.assertEqual(
@@ -181,3 +222,11 @@ class HelpersTest(TestCase):
             failure.exception.args[0],
             "The following device(s) test_device have no platform defined. Platform is required.",
         )
+
+    def test_device_to_settings_map(self):
+        """Verify Golden Config Settings are properly mapped to devices."""
+        test_device = Device.objects.get(name="test_device")
+        orphan_device = Device.objects.get(name="orphan_device")
+        self.assertEqual(self.device_to_settings_map[test_device], self.test_settings_c)
+        self.assertEqual(self.device_to_settings_map[orphan_device], self.test_settings_b)
+        self.assertEqual(get_device_to_settings_map(queryset=Device.objects.none()), {})

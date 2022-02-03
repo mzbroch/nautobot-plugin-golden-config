@@ -41,9 +41,7 @@ def get_job_filter(data=None):
 
     base_qs = Device.objects.none()
     for obj in models.GoldenConfigSetting.objects.all():
-        base_qs = base_qs | obj.get_queryset()
-
-    base_qs = base_qs.distinct()
+        base_qs = base_qs | obj.get_queryset().distinct()
 
     if base_qs.count() == 0:
         raise NornirNautobotException(

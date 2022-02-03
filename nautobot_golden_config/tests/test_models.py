@@ -110,7 +110,7 @@ class GoldenConfigSettingModelTestCase(TestCase):
     def test_absolute_url_success(self):
         """Verify that get_absolute_url() returns the expected URL."""
         url_string = self.global_settings.get_absolute_url()
-        self.assertEqual(url_string, f"/plugins/golden-config/setting/{self.global_settings.pk}/")
+        self.assertEqual(url_string, f"/plugins/golden-config/setting/{self.global_settings.slug}/")
 
     def test_bad_graphql_query(self):
         """Invalid graphql query."""
@@ -153,7 +153,7 @@ class GoldenConfigSettingGitModelTestCase(TestCase):
         """Setup test data."""
         create_git_repos()
 
-        # Since we enforce a singleton pattern on this model, nuke the auto-created object.
+        # Since we enforced a singleton pattern on this model in 0.9 release migrations, nuke any auto-created objects.
         GoldenConfigSetting.objects.all().delete()
 
         # Create fresh new object, populate accordingly.
@@ -185,12 +185,19 @@ class GoldenConfigSettingGitModelTestCase(TestCase):
         self.assertEqual(self.golden_config.backup_repository, GitRepository.objects.get(name="test-backup-repo-1"))
         self.assertEqual(self.golden_config.intended_repository, GitRepository.objects.get(name="test-intended-repo-1"))
 
-    # def test_removing_git_repos(self):
-    #     """Ensure we can remove the Git Repository obejcts from GoldenConfigSetting."""
-    #     GitRepository.objects.all().delete()
-    #     self.assertEqual(self.golden_config.intended_repository, None)
-    #     self.assertEqual(self.golden_config.backup_repository, None)
-    #     self.assertEqual(GoldenConfigSetting.objects.all().count(), 1)
+    def test_removing_git_repos(self):
+        """Ensure we can remove the Git Repository obejcts from GoldenConfigSetting."""
+        print("mzb")
+        GitRepository.objects.all().delete()
+        print(f"{GitRepository.objects.all()}")
+        print(f"{self.golden_config.intended_repository}")
+        print(f"{GoldenConfigSetting.objects.all()}")
+        print("/mzb")
+        import time
+        time.sleep(3)
+        self.assertEqual(self.golden_config.intended_repository, None)
+        self.assertEqual(self.golden_config.backup_repository, None)
+        self.assertEqual(GoldenConfigSetting.objects.all().count(), 1)
 
     def test_clean_up(self):
         """Delete all objects created of GoldenConfigSetting type."""
