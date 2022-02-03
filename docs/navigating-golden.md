@@ -37,10 +37,17 @@ Each Job attempts to provide sane error handling, and respects the `debug` flag 
 ## Application Settings
 
 The golden configuration plugin settings can be found by navigating to `Plugins -> Settings` button. Select one of the Settings, under the `Golden Configuration` section.
+Since Golden Configuration Plugin version 1.0, the plugin allows for multiple settings to be configured by the User.
+Each of the settings, has the individual repositories and configuration details, as well as the scope.
+You could use a combination of settings to customize Your Configuration Compliance behaviour.
+Settings have a name and a weight. The weight parameter indicates the priority of given Settings - the higher the weight, the the device matching the scope defined will be assigned to the scope.
+At the same moment, each device will be matched up to maximum of only one `Settings.` In case of the same weight, the sorting is performed by the name.
 
 ![Navigate to Settings](./img/navigate-compliance-rules.png)
 
-To configure or update the settings click the pencil icon to edit.
+To create new settings click on the `+Add` button.
+To update existing settings click on one of the `Settings` name.
+
 
 |Setting|Explanation|
 |:--|:--|
