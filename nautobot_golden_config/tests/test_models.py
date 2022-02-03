@@ -187,16 +187,10 @@ class GoldenConfigSettingGitModelTestCase(TestCase):
 
     def test_removing_git_repos(self):
         """Ensure we can remove the Git Repository obejcts from GoldenConfigSetting."""
-        print("mzb")
         GitRepository.objects.all().delete()
-        print(f"{GitRepository.objects.all()}")
-        print(f"{self.golden_config.intended_repository}")
-        print(f"{GoldenConfigSetting.objects.all()}")
-        print("/mzb")
-        import time
-        time.sleep(3)
-        self.assertEqual(self.golden_config.intended_repository, None)
-        self.assertEqual(self.golden_config.backup_repository, None)
+        gc = GoldenConfigSetting.objects.all().first()
+        self.assertEqual(gc.intended_repository, None)
+        self.assertEqual(gc.backup_repository, None)
         self.assertEqual(GoldenConfigSetting.objects.all().count(), 1)
 
     def test_clean_up(self):

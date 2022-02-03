@@ -17,10 +17,10 @@ Follow the steps below to get up and running for the configuration backup elemen
     3. Make sure to select the **Provides** called `backup configs`.
     4. Click Create.
 
-3. Next, make sure to update the Plugins **Settings** with the backup details.
+3. Next, make sure to create new or update existing Plugins **Settings** with the backup details.
 
     1. Navigate to `Plugins -> Settings` under the Golden Configuration Section.
-    2. Select one of the `Settings`
+    2. Create new or select one of the existing `Settings` objects
     2. Fill out the Backup Repository. (The dropdown will show the repository that was just created.)
     3. Fill out Backup Path Template. Typically `{{obj.site.slug}}/{{obj.name}}.cfg`, see [Setting Details](./navigating-golden.md#application-settings)
     4. Select whether or not to do a connectivity check per device.
@@ -62,10 +62,10 @@ Follow the steps below to get up and running for the intended configuration elem
     3. Make sure to select the **Provides** called `jinja templates`.
     4. Click Create.
 
-4. Next, make sure to update the Plugins **Settings** with the intended and jinja2 template details.
+4. Next, make sure to create new or update existing Plugins **Settings** with the intended and jinja2 template details.
 
     1. Navigate to `Plugins -> Settings` under the Golden Configuration Section.
-    2. Select one of the `Settings`
+    2. Create new or select one of the existing `Settings` objects
     2. Fill out the Intended Repository. (The dropdown will show the repository that was just created.)
     3. Fill out Intended Path Template. Typically `{{obj.site.slug}}/{{obj.name}}.cfg`, see [Setting Details](./navigating-golden.md#application-settings)
     4. Fill out Jinja Repository. (The dropdown will show the repository that was just created.)

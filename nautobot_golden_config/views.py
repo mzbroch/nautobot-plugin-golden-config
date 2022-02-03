@@ -845,6 +845,7 @@ class GoldenConfigSettingCreateView(generic.ObjectEditView):
     model = models.GoldenConfigSetting
     queryset = models.GoldenConfigSetting.objects.all()
     model_form = forms.GoldenConfigSettingFeatureForm
+    template_name = "nautobot_golden_config/goldenconfigsetting_edit.html"
 
 
 class GoldenConfigSettingDeleteView(generic.ObjectDeleteView):
@@ -867,7 +868,7 @@ class GoldenConfigSettingEditView(generic.ObjectEditView):
     model = models.GoldenConfigSetting
     queryset = models.GoldenConfigSetting.objects.all()
     model_form = forms.GoldenConfigSettingFeatureForm
-    #template_name = "nautobot_golden_config/goldenconfigsetting_edit.html"
+    template_name = "nautobot_golden_config/goldenconfigsetting_edit.html"
 
 
 class GoldenConfigSettingListView(generic.ObjectListView):
