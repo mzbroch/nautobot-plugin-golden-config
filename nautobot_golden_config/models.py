@@ -416,9 +416,9 @@ class GoldenConfig(PrimaryModel):
 class GoldenConfigSetting(PrimaryModel):
     """GoldenConfigSetting Model defintion. This provides global configs instead of via configs.py."""
 
-    name = models.CharField(max_length=100, unique=True)
-    slug = models.SlugField(max_length=100, unique=True)
-    weight = models.PositiveSmallIntegerField(default=1000)
+    name = models.CharField(max_length=100, unique=True, blank=False)
+    slug = models.SlugField(max_length=100, unique=True, blank=False)
+    weight = models.PositiveSmallIntegerField(default=1000, blank=False)
     description = models.CharField(
         max_length=200,
         blank=True,
